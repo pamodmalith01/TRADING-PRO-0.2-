@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Packages | TRADING PRO 0.2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .active-plan-badge {
+            background: var(--accent);
+            color: #000;
+            padding: 0.2rem 1rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            TRADING PRO 0.2
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="packages.html" class="active">Packages</a>
+            <a href="ai-chat.html">AI Chat</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div id="authNav" style="display: flex; gap: 1rem; align-items: center;">
+            <a href="login.html" class="btn-login" style="border: none;">Login</a>
+            <a href="register.html" class="btn-login" style="background: var(--primary); color: #000;">Sign Up</a>
+        </div>
+    </nav>
+
+    <main style="padding-top: 8rem;">
+        <section id="packages" class="packages" style="padding-top: 2rem;">
+            <div class="section-head">
+                <h1 style="font-size: 3.5rem; margin-bottom: 1.5rem;">Choose Your Strategy</h1>
+                <p style="color: var(--text-dim); max-width: 600px; margin: 0 auto;">Select the level of AI precision
+                    and capital allocation that fits your investment profile.</p>
+            </div>
+            <div class="package-grid">
+                <!-- Starter -->
+                <div class="package-card" id="plan-Starter">
+                    <h3>Starter</h3>
+                    <div class="price">$100 <span>/ mo</span></div>
+                    <ul class="features-list">
+                        <li>Basic AI Logic</li>
+                        <li>5 Weekly Trades</li>
+                        <li>Email Support</li>
+                        <li>Standard Security</li>
+                        <li>Max Balance $1,000</li>
+                    </ul>
+                    <button onclick="buyPlan('Starter')" class="btn-secondary"
+                        style="width: 100%; border: none; cursor: pointer; padding: 1rem;">Choose Plan</button>
+                </div>
+                <!-- Pro -->
+                <div class="package-card popular" id="plan-Professional">
+                    <h3>Professional</h3>
+                    <div class="price">$1,000 <span>/ mo</span></div>
+                    <ul class="features-list">
+                        <li>Advanced Algorithm 0.2</li>
+                        <li>Unlimited Daily Trades</li>
+                        <li>24/7 Priority Support</li>
+                        <li>Risk Management AI</li>
+                        <li>Advanced Analytics</li>
+                        <li>Max Balance $50,000</li>
+                    </ul>
+                    <button onclick="buyPlan('Professional')" class="btn-primary"
+                        style="width: 100%; border: none; cursor: pointer; padding: 1rem;">Get Started Now</button>
+                </div>
+                <!-- Elite -->
+                <div class="package-card" id="plan-Elite">
+                    <h3>Elite</h3>
+                    <div class="price">$5,000 <span>/ mo</span></div>
+                    <ul class="features-list">
+                        <li>Premium Neural Network</li>
+                        <li>Institutional Grade Tools</li>
+                        <li>Dedicated Account Manager</li>
+                        <li>Hardware-level Security</li>
+                        <li>VIP Events Access</li>
+                        <li>Unlimited Balance</li>
+                    </ul>
+                    <button onclick="buyPlan('Elite')" class="btn-secondary"
+                        style="width: 100%; border: none; cursor: pointer; padding: 1rem;">Choose Plan</button>
+                </div>
+            </div>
+        </section>
+
+        <section style="padding: 5rem 10%; text-align: center;">
+            <div class="dashboard-card"
+                style="background: linear-gradient(90deg, rgba(112,0,255,0.1), rgba(0,242,255,0.1)); border-color: var(--primary);">
+                <h2>Custom Enterprise Plan?</h2>
+                <p style="color: var(--text-dim); margin: 1rem 0 2rem;">For institutional investors requiring
+                    high-frequency execution and dedicated infrastructure.</p>
+                <a href="contact.html" class="btn-primary">Contact Sales</a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="copyright">
+            &copy; 2026 TRADING PRO 0.2. Global Intelligence System.
+        </div>
+    </footer>
+
+    <script>
+        function checkSession() {
+            const isAuthenticated = localStorage.getItem('user_authenticated');
+            if (isAuthenticated === 'true') {
+                // Highlight active plan
+                const activePlan = localStorage.getItem('active_plan');
+                if (activePlan) {
+                    const card = document.getElementById('plan-' + activePlan);
+                    if (card) {
+                        const badge = document.createElement('div');
+                        badge.className = 'active-plan-badge';
+                        badge.innerText = 'CURRENT PLAN';
+                        card.prepend(badge);
+                        card.style.borderColor = 'var(--accent)';
+                        card.querySelector('button').innerText = 'Active Plan';
+                        card.querySelector('button').disabled = true;
+                        card.querySelector('button').style.opacity = '0.5';
+                    }
+                }
+            }
+        }
+
+        function buyPlan(planName) {
+            const isAuthenticated = localStorage.getItem('user_authenticated');
+
+            if (isAuthenticated !== 'true') {
+                alert("You need to Register or Login to purchase a trading plan!");
+                window.location.href = 'register.html';
+                return;
+            }
+
+            const userEmail = localStorage.getItem('user_email');
+            localStorage.setItem('active_plan', planName);
+
+            // Simulation of "receipt/order" sent to email
+            alert(`Order Confirmed!\nPlan: ${planName}\nAccount: ${userEmail}\n\nInvoice details have been sent to your registered email.`);
+            window.location.href = 'dashboard.html';
+        }
+
+        checkSession();
+    </script>
+    <script src="main.js"></script>
+</body>
+
+</html>

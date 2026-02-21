@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRADING PRO AI | Intelligent Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .chat-layout {
+            display: flex;
+            height: calc(100vh - 80px);
+            margin-top: 80px;
+            background: #0d1117;
+            overflow: hidden;
+        }
+
+        /* Sidebar Mock */
+        .chat-sidebar {
+            width: 260px;
+            background: #05070a;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            transition: 0.3s;
+        }
+
+        .new-chat-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            transition: 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--primary);
+        }
+
+        .chat-history-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            padding: 0.8rem;
+            border-radius: 8px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        /* Main Chat Area */
+        .chat-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at center, #111827 0%, #05070a 100%);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 15%;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            scroll-behavior: smooth;
+        }
+
+        .msg-row {
+            display: flex;
+            gap: 1.5rem;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .avatar-box {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        .msg-row.ai .avatar-box {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+        }
+
+        .msg-row.user .avatar-box {
+            background: var(--secondary);
+            color: #fff;
+        }
+
+        .msg-content {
+            flex: 1;
+            color: #ececf1;
+            font-size: 1rem;
+            line-height: 1.6;
+            padding-top: 5px;
+        }
+
+        .msg-content b {
+            color: var(--primary);
+        }
+
+        /* Input Area */
+        .chat-input-wrapper {
+            padding: 2rem 15% 3rem;
+            background: linear-gradient(to top, #05070a 70%, transparent);
+        }
+
+        .input-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            background: #1f2937;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: flex-end;
+            gap: 1rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            transition: 0.3s;
+        }
+
+        .input-container:focus-within {
+            border-color: var(--primary);
+            background: #2d3748;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        textarea.chat-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1rem;
+            padding: 0.4rem 0;
+            resize: none;
+            max-height: 200px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .send-btn {
+            background: var(--primary);
+            color: #000;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 2px;
+        }
+
+        .send-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-dim);
+            cursor: not-allowed;
+        }
+
+        .typing-dot {
+            width: 5px;
+            height: 5px;
+            background: var(--text-dim);
+            border-radius: 50%;
+            display: inline-block;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(0);
+            }
+
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .chat-sidebar {
+                display: none;
+            }
+
+            .chat-messages,
+            .chat-input-wrapper {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-blobs">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            TRADING PRO 0.2
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="packages.html">Packages</a>
+            <a href="ai-chat.html" class="active">AI Chat</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div id="authNav" style="display: flex; gap: 1rem; align-items: center;">
+            <a href="login.html" class="btn-login" style="border: none;">Login</a>
+            <a href="register.html" class="btn-login" style="background: var(--primary); color: #000;">Sign Up</a>
+        </div>
+    </nav>
+
+    <main class="chat-layout">
+        <aside class="chat-sidebar">
+            <a href="javascript:void(0)" onclick="location.reload()" class="new-chat-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                New Chat
+            </a>
+            <div class="chat-history-list">
+                <div class="history-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Understanding SL/TP
+                </div>
+                <div class="history-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Leverage Guide
+                </div>
+                <div class="history-item">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    Market Psychology
+                </div>
+            </div>
+            <div
+                style="padding-top: 1rem; border-top: 1px solid var(--border-color); color: var(--text-dim); font-size: 0.75rem; text-align: center;">
+                Powered by TRADING PRO 0.2.4
+            </div>
+        </aside>
+
+        <section class="chat-main">
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be injected here -->
+            </div>
+
+            <div class="chat-input-wrapper">
+                <form class="input-container" id="chatForm">
+                    <textarea class="chat-input" id="userInput"
+                        placeholder="Ask anything about trading, accounts, or strategies..." rows="1"></textarea>
+                    <button type="submit" class="send-btn" id="sendBtn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                    </button>
+                </form>
+                <p style="text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 1rem;">
+                    TRADING PRO AI can make mistakes. Verify important financial info.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const chatForm = document.getElementById('chatForm');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        // State
+        let isTyping = false;
+
+        function checkSession() {
+            if (localStorage.getItem('user_authenticated') !== 'true') {
+                alert("Please Register or Login to use TRADING PRO AI.");
+                window.location.href = 'register.html';
+            }
+        }
+
+        // Auto-resize textarea
+        userInput.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Handle Enter key
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                chatForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        function addMessage(text, isAI = false, streaming = false) {
+            const row = document.createElement('div');
+            row.className = `msg-row ${isAI ? 'ai' : 'user'}`;
+
+            const initials = isAI ? 'AI' : (localStorage.getItem('user_name') || 'ME').substring(0, 2).toUpperCase();
+
+            row.innerHTML = `
+                <div class="avatar-box">${initials}</div>
+                <div class="msg-content">${streaming ? '' : text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>')}</div>
+            `;
+
+            chatMessages.appendChild(row);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            return row.querySelector('.msg-content');
+        }
+
+        async function streamText(element, text) {
+            isTyping = true;
+            sendBtn.disabled = true;
+
+            const processedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            let currentText = "";
+            let i = 0;
+
+            // Simulation of ChatGPT typing effect
+            const typeBuffer = text.split('');
+            for (let char of typeBuffer) {
+                currentText += char;
+                // Render with basic markdown-like support during streaming
+                element.innerHTML = currentText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>') + '<span class="typing-dot"></span>';
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                await new Promise(r => setTimeout(r, Math.random() * 15 + 10)); // Variable speed
+            }
+
+            element.innerHTML = processedText;
+            isTyping = false;
+            sendBtn.disabled = false;
+        }
+
+        chatForm.onsubmit = async (e) => {
+            e.preventDefault();
+            const text = userInput.value.trim();
+            if (!text || isTyping) return;
+
+            addMessage(text, false);
+            userInput.value = '';
+            userInput.style.height = 'auto';
+
+            // Show temporary thinking row
+            const thinkingRow = document.createElement('div');
+            thinkingRow.className = 'msg-row ai';
+            thinkingRow.innerHTML = `
+                <div class="avatar-box">AI</div>
+                <div class="msg-content"><div class="typing-dot"></div> <div class="typing-dot"></div> <div class="typing-dot"></div></div>
+            `;
+            chatMessages.appendChild(thinkingRow);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Generate Response
+            setTimeout(async () => {
+                chatMessages.removeChild(thinkingRow);
+                const aiMsgElement = addMessage("", true, true);
+
+                const input = text.toLowerCase();
+                let response = "";
+
+                const db = [
+                    {
+                        keys: ['hello', 'hi', 'hey', 'subha', 'halow', 'kohomada'],
+                        en: "Hello! I am TRADING PRO AI, your personalized institutional intelligence. I can help you decode market trends, optimize risk, or navigate the 0.2 platform. What's on your mind?",
+                        si: "ආයුබෝවන්! මම TRADING PRO AI. ඔබට වෙළඳපල ප්‍රවණතා හඳුනා ගැනීමට, අවදානම් කළමනාකරණයට සහ අපගේ පද්ධතිය භාවිතා කිරීමට මම සහාය වෙමි. අද ඔබට දැනගත යුත්තේ කුමක්ද?"
+                    },
+                    {
+                        keys: ['leverage', 'liva', 'liwaraj'],
+                        en: "**Leverage** is a powerful tool that multiplies your buying power. While it allows for significant gains with small capital, it exponentially increases risk. We recommend a maximum of 1:100 for stable growth.",
+                        si: "**Leverage** මගින් ඔබේ ප්‍රාග්ධනයට වඩා වැඩි වටිනාකමකින් ගනුදෙනු කිරීමට ඉඩ සලසයි. මෙය ලාභය වැඩි කරන අතරම අවදානමද දැඩි ලෙස ඉහළ නංවයි. ආරක්ෂිතව දියුණු වීමට 1:100 වැනි මට්ටමක් සුදුසුයි."
+                    },
+                    {
+                        keys: ['stop loss', 'sl', 'nattanna'],
+                        en: "The **Stop Loss (SL)** is your most vital risk management tool. It's a pre-set order that automatically exits a position at a specific price to prevent further losses. Never trade without one.",
+                        si: "**Stop Loss (SL)** යනු ඔබේ පාඩු සීමා කරන වැදගත්ම ක්‍රමයයි. මිල යම් මට්ටමකට පැමිණි විට ගනුදෙනුව ස්වයංක්‍රීයව නවතී. SL නොමැතිව කිසිවිටක ගනුදෙනු නොකරන්න."
+                    },
+                    {
+                        keys: ['withdraw', 'salli', 'ganna', 'vidro'],
+                        en: "Withdrawals are executed through your integrated broker (XM/Exness/etc). Once my algorithm generates profit in your MetaTrader account, you can withdraw using your broker's dashboard instantly.",
+                        si: "මුදල් ලබා ගැනීම (Withdraw) ඔබේ බ්‍රෝකර් (XM/Exness) හරහා සිදු කළ හැකියි. AI මගින් ලැබූ ලාභය ඕනෑම වේලාවක තාක්ෂණික බාධාවකින් තොරව ලබා ගත හැක."
+                    },
+                    {
+                        keys: ['crypto', 'bitcoin', 'kripto'],
+                        en: "Yes, I analyze **Cryptocurrency** markets too! I look for volatility patterns in BTC, ETH, and other major Alts. Our 0.2 engine is optimized for high-frequency crypto scalping.",
+                        si: "ඔව්, මම ක්‍රිප්ටෝ වෙළඳපලද විශ්ලේෂණය කරමි! BTC, ETH ඇතුළු ප්‍රධාන කාසි වල මිල වෙනස්වීම් මම නිරීක්ෂණය කරමි."
+                    },
+                    {
+                        keys: ['risk', 'safe', 'secure'],
+                        en: "Risk management is the backbone of TRADING PRO 0.2. We use a **Dynamic Lot Sizing** algorithm that adjusts based on your account equity to ensure you never face a margin call.",
+                        si: "අවදානම් කළමනාකරණය අපගේ පද්ධතියේ ප්‍රධානම කොටසයි. ඔබේ ගිණුමේ ශේෂය අනුව ගනුදෙනු ප්‍රමාණය ස්වයංක්‍රීයව පාලනය වේ."
+                    }
+                ];
+
+                let match = db.find(item => item.keys.some(key => input.includes(key)));
+
+                if (match) {
+                    response = `${match.en}\n\n${match.si}`;
+                } else if (input.length > 5) {
+                    // Smart generic response
+                    response = "Analysing your inquiry through the **TRADING PRO 0.2 Neural Core**... \n\nI understand you're interested in that topic. I can provide insights on market sentiment, technical indicators, or account optimization. Please let me know which aspect you'd like to explore further!\n\nඅපගේ ප්‍රධාන පද්ධතිය මගින් ඔබගේ ප්‍රශ්නය විශ්ලේෂණය කරයි... \n\nඔබ විමසූ කරුණ ගැන වෙළඳපල තත්ත්වයන්, තාක්ෂණික දර්ශක හෝ ගිණුම් පද්ධතිය ගැන වැඩිදුර තොරතුරු ලබා දිය හැකිය. ඔබට අවශ්‍ය කුමන අංශයෙන්දැයි පවසන්න.";
+                } else {
+                    response = "I'm here to help you excel in trading. Could you please provide more details? Ask me about **Leverage**, **Risk**, **Packages**, or **Link Broker**.\n\nමම ඔබට ට්‍රේඩින් සාර්ථක කර ගැනීමට සහය වෙමි. වැඩි විස්තර ලබා දෙන්න. අවදානම, ලිවරේජ් හෝ අපේ පැකේජ ගැන විමසන්න.";
+                }
+
+                await streamText(aiMsgElement, response);
+            }, 800);
+        };
+
+        // Initial Setup
+        checkSession();
+        addMessage("**Welcome back!** I am your TRADING PRO AI assistant. Ask me anything about the markets or our 0.2 technology.", true);
+    </script>
+    <script src="main.js"></script>
+</body>
+
+</html>

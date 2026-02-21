@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | TRADING PRO 0.2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+    <div class="bg-blobs">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <nav>
+        <a href="index.html" class="logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+            TRADING PRO 0.2
+        </a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="packages.html">Packages</a>
+            <a href="ai-chat.html">AI Chat</a>
+            <a href="dashboard.html" class="active">Dashboard</a>
+            <a href="contact.html">Contact</a>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;" id="authNav">
+            <a href="login.html" class="btn-login" style="border: none;">Login</a>
+            <a href="register.html" class="btn-login" style="background: var(--primary); color: #000;">Sign Up</a>
+        </div>
+    </nav>
+
+    <!-- Indicators Modal -->
+    <div class="indicator-overlay" id="indicatorOverlay">
+        <div class="indicator-modal">
+            <button class="modal-close" id="closeIndicators">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M3 3v18h18"></path>
+                    <path d="M7 12l5-5 5 5 5-5"></path>
+                </svg>
+                Trading Indicators
+            </h2>
+            <div class="indicator-grid">
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Relative Strength Index (RSI)</span>
+                        <span class="indicator-desc">Identifies overbought/oversold conditions</span>
+                    </div>
+                    <div class="indicator-switch" onclick="toggleIndicator(this, 'RSI')"></div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Moving Average (MA)</span>
+                        <span class="indicator-desc">Smoothes price data to identify trends</span>
+                    </div>
+                    <div class="indicator-switch active" onclick="toggleIndicator(this, 'MA')"></div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Bollinger Bands</span>
+                        <span class="indicator-desc">Measures market volatility and price levels</span>
+                    </div>
+                    <div class="indicator-switch" onclick="toggleIndicator(this, 'BB')"></div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">MACD</span>
+                        <span class="indicator-desc">Trend-following momentum indicator</span>
+                    </div>
+                    <div class="indicator-switch active" onclick="toggleIndicator(this, 'MACD')"></div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Market Pressure Meter</span>
+                        <span class="indicator-desc">Visualize real-time buy/sell volume pressure</span>
+                    </div>
+                    <div class="indicator-switch active" onclick="toggleIndicator(this, 'PRESSURE')"></div>
+                </div>
+            </div>
+            <div
+                style="margin-top: 2rem; padding: 1rem; background: rgba(0,242,255,0.05); border-radius: 12px; font-size: 0.75rem; color: var(--text-dim); text-align: center;">
+                AI Algorithm 0.2 utilizes active indicators for signal verification.
+            </div>
+        </div>
+    </div>
+
+    <!-- Algorithmic Setup Modal -->
+    <div class="indicator-overlay" id="algoOverlay">
+        <div class="indicator-modal">
+            <button class="modal-close" id="closeAlgo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <h2>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path
+                        d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83">
+                    </path>
+                </svg>
+                Algorithmic Setup
+            </h2>
+            <div class="indicator-grid">
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Trading Strategy</span>
+                        <span class="indicator-desc">Select core execution logic</span>
+                    </div>
+                    <select class="algo-select" id="tradeStrategy" onchange="updateAlgoSettings()">
+                        <option value="scalp">Aggressive Scalping</option>
+                        <option value="intraday" selected>Intraday (Day Trade)</option>
+                        <option value="swing">Safe Swing Trader</option>
+                    </select>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Risk Coefficient</span>
+                        <span class="indicator-desc">Adjust lot size calculation multiplier</span>
+                    </div>
+                    <select class="algo-select" id="riskLevel" onchange="updateAlgoSettings()">
+                        <option value="0.5">Low (0.5%)</option>
+                        <option value="1.0" selected>Medium (1.0%)</option>
+                        <option value="2.5">High (2.5%)</option>
+                    </select>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Auto-Hedge System</span>
+                        <span class="indicator-desc">Opens counter positions during volatility</span>
+                    </div>
+                    <div class="indicator-switch" onclick="toggleSwitch(this, 'Hedge')"></div>
+                </div>
+                <div class="indicator-row">
+                    <div class="indicator-info">
+                        <span class="indicator-name">Equity Protector</span>
+                        <span class="indicator-desc">Automatic shutdown at drawdown limit</span>
+                    </div>
+                    <div class="indicator-switch active" onclick="toggleSwitch(this, 'Protector')"></div>
+                </div>
+            </div>
+            <div
+                style="margin-top: 2rem; padding: 1rem; background: rgba(112,0,255,0.05); border-radius: 12px; font-size: 0.75rem; color: var(--text-dim); text-align: center;">
+                Neural configurations will be applied to the next execution cycle.
+            </div>
+        </div>
+    </div>
+
+    <main class="dashboard-container">
+        <div class="dashboard-main">
+            <!-- New Connection Manager Section -->
+            <div class="dashboard-card" style="margin-bottom: 2rem; border-color: var(--primary);">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div id="connIcon"
+                            style="width: 40px; height: 40px; background: rgba(255,62,62,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3e3e"
+                                stroke-width="2">
+                                <path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path>
+                                <line x1="12" y1="2" x2="12" y2="12"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 id="connStatusTitle" style="color: #fff; font-size: 1.1rem;">MetaTrader Bridge: Not
+                                Linked</h3>
+                            <p id="connSubText" style="color: var(--text-dim); font-size: 0.8rem;">Link your XM/Exness
+                                account to start AI trading.</p>
+                        </div>
+                    </div>
+                    <a href="link-broker.html" id="actionLinkBtn" class="btn-primary"
+                        style="padding: 0.7rem 1.5rem; font-size: 0.85rem; text-decoration: none;">Connect Now</a>
+                </div>
+            </div>
+
+            <div class="dashboard-card" style="margin-bottom: 2rem; padding: 0;">
+                <div class="mt5-terminal">
+                    <!-- Top Bar -->
+                    <div class="terminal-top-bar">
+                        <div style="display: flex; gap: 1rem;">
+                            <span>File</span>
+                            <span>View</span>
+                            <span>Insert</span>
+                            <span>Charts</span>
+                            <span>Tools</span>
+                            <span>Window</span>
+                            <span>Help</span>
+                        </div>
+                        <div style="font-weight: 700; color: var(--primary);">MT5 TERMINAL 0.2.4</div>
+                    </div>
+
+                    <div class="terminal-body">
+                        <!-- Market Watch -->
+                        <aside class="market-watch">
+                            <div class="market-header">
+                                <span>Symbol</span>
+                                <span style="text-align: right;">Bid</span>
+                                <span style="text-align: right;">Ask</span>
+                            </div>
+                            <div class="market-list" id="marketWatchList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </aside>
+
+                        <!-- Main Chart Area -->
+                        <div class="terminal-main">
+                            <div class="chart-area" id="terminalChart">
+                                <div class="chart-watermark" id="chartWatermark">EURUSD<br><span
+                                        style="font-size: 1rem; opacity: 0.5;">H1 • ALGORITHM 0.2</span></div>
+                                <!-- Simple CSS Grid is the background -->
+                                <svg id="candleSvg" width="100%" height="100%" style="position: absolute;"></svg>
+                            </div>
+
+                            <!-- Toolbox -->
+                            <div class="terminal-toolbox">
+                                <div class="toolbox-tabs">
+                                    <div class="toolbox-tab active" onclick="switchTab('trade')">Trade</div>
+                                    <div class="toolbox-tab" onclick="switchTab('history')">History</div>
+                                    <div class="toolbox-tab">Exposure</div>
+                                    <div class="toolbox-tab">Journal</div>
+                                </div>
+                                <div class="toolbox-content">
+                                    <table class="toolbox-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Symbol</th>
+                                                <th>Ticket</th>
+                                                <th>Time</th>
+                                                <th>Type</th>
+                                                <th>Volume</th>
+                                                <th>Price</th>
+                                                <th>S/L</th>
+                                                <th>T/P</th>
+                                                <th>Profit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="activeTradesBody">
+                                            <!-- Open trades appear here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buy/Sell Pressure Meter -->
+            <div class="pressure-meter-card" id="pressureMeter">
+                <div class="pressure-header">
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <h4 style="font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Live Market
+                            Pressure</h4>
+                        <span id="activeSymbolBadge" class="signal-badge signal-neutral">EURUSD</span>
+                        <span id="livePriceDisplay"
+                            style="font-family: var(--font-mono); font-weight: 700; color: #fff; font-size: 1rem;">1.08452</span>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;" id="timeframeContainer">
+                        <div class="timeframe-pill active" onclick="setTimeframe('1M')">1M</div>
+                        <div class="timeframe-pill" onclick="setTimeframe('5M')">5M</div>
+                        <div class="timeframe-pill" onclick="setTimeframe('15M')">15M</div>
+                        <div class="timeframe-pill" onclick="setTimeframe('1H')">1H</div>
+                    </div>
+                </div>
+
+                <div class="gauge-container">
+                    <div class="gauge-fill buy-fill" id="buyGauge"></div>
+                    <div class="gauge-fill sell-fill" id="sellGauge"></div>
+                </div>
+
+                <div class="pressure-labels">
+                    <div style="color: var(--primary);">BUY <span class="pressure-value" id="buyVal">50</span>%</div>
+                    <div style="text-align: center;">
+                        <span id="aiRecommendation" class="signal-badge signal-neutral">Analyzing...</span>
+                    </div>
+                    <div style="color: #ff3e3e; text-align: right;"><span class="pressure-value" id="sellVal">50</span>%
+                        SELL</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-sidebar">
+            <div class="dashboard-card balance-card">
+                <p style="color: var(--text-dim); text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem;">
+                    Institutional Broker Wallet</p>
+                <div class="balance-value">$<span id="balance">24,500.00</span></div>
+
+                <div
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Deposit</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #fff;">$<span
+                                id="depositAmt">22,000.00</span></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Total P/L
+                        </div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--accent);">+$<span
+                                id="totalPL">2,500.00</span></div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Total Wins
+                        </div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--primary);" id="winCount">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Total Losses
+                        </div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #ff3e3e;" id="lossCount">0</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">MT5 Balance
+                        </div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #fff;">$<span id="mtBalance">0.00</span>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Equity
+                            (Margin)</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: var(--primary);">$<span
+                                id="equity">0.00</span></div>
+                    </div>
+                    <div style="display: none;"><span id="freeMargin"></span></div>
+                    <div>
+                        <div style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Win Rate
+                        </div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #fff;"><span id="winRate">0</span>%
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card" style="margin-top: 2rem;">
+                <h3 style="margin-bottom: 1.5rem;">Expert Advisor Control</h3>
+                <button class="btn-bot btn-start" id="runBot" style="font-size: 1.1rem; padding: 1.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                        style="vertical-align: middle; margin-right: 8px;">
+                        <path d="M8 5v14l11-7z" />
+                    </svg>
+                    INITIALIZE EA 0.2
+                </button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                    <button class="btn-bot" id="openAlgo"
+                        style="background: rgba(255,255,255,0.05); color: #fff; padding: 0.8rem; font-size: 0.8rem;">Algorithmic
+                        Setup</button>
+                    <button class="btn-bot" id="openIndicators"
+                        style="background: rgba(255,255,255,0.05); color: #fff; padding: 0.8rem; font-size: 0.8rem;">Indicators</button>
+                </div>
+            </div>
+
+            <div class="dashboard-card" style="margin-top: 2rem; border-color: var(--secondary);">
+                <h3 style="color: var(--secondary);">Neural Intelligence</h3>
+                <p id="aiInsight" style="color: var(--text-dim); font-size: 0.85rem; margin-top: 1rem;">
+                    MT5 Bridge active. Waiting for initialization...
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="copyright">
+            &copy; 2026 TRADING PRO 0.2. MetaTrader 5 Bridge v2.4.1
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        // State Management
+        let isRunning = false;
+        let depositBalance = 22000.00;
+        let balance = 24500.00;
+        let equity = balance;
+
+        // Check for Linked Account Data
+        const savedBalance = localStorage.getItem('account_balance');
+        const savedDeposit = localStorage.getItem('account_deposit');
+        if (savedBalance) {
+            balance = parseFloat(savedBalance);
+            equity = balance;
+        }
+        if (savedDeposit) {
+            depositBalance = parseFloat(savedDeposit);
+        }
+
+        let totalWins = 142;
+        let totalLosses = 38;
+        let totalTrades = 180;
+        let currentTimeframe = '1M';
+        let currentSymbol = 'EURUSD';
+        let activeTrades = [];
+        let currentStrategy = 'intraday'; // scalp, intraday, swing
+        let marketData = [
+            { s: 'EURUSD', b: 1.08452, a: 1.08465 },
+            { s: 'GBPUSD', b: 1.26341, a: 1.26358 },
+            { s: 'USDJPY', b: 150.124, a: 150.136 },
+            { s: 'XAUUSD', b: 2024.15, a: 2024.65 },
+            { s: 'BTCUSD', b: 52140.5, a: 52155.2 },
+            { s: 'ETHUSD', b: 2840.12, a: 2842.45 }
+        ];
+
+        // DOM Elements
+        const runBtn = document.getElementById('runBot');
+        const balanceEl = document.getElementById('balance');
+        const mtBalanceEl = document.getElementById('mtBalance');
+        const equityEl = document.getElementById('equity');
+        const freeMarginEl = document.getElementById('freeMargin');
+
+        // Stats Elements
+        const depositEl = document.getElementById('depositAmt');
+        const totalPLEl = document.getElementById('totalPL');
+        const winCountEl = document.getElementById('winCount');
+        const lossCountEl = document.getElementById('lossCount');
+        const winRateEl = document.getElementById('winRate');
+
+        const marketList = document.getElementById('marketWatchList');
+        const tradesBody = document.getElementById('activeTradesBody');
+        const watermark = document.getElementById('chartWatermark');
+        const aiInsightEl = document.getElementById('aiInsight');
+
+        const buyGauge = document.getElementById('buyGauge');
+        const sellGauge = document.getElementById('sellGauge');
+        const buyValEl = document.getElementById('buyVal');
+        const sellValEl = document.getElementById('sellVal');
+        const recommendationEl = document.getElementById('aiRecommendation');
+        const symbolBadge = document.getElementById('activeSymbolBadge');
+        const priceDisplay = document.getElementById('livePriceDisplay');
+
+        function checkSession() {
+            const isAuthenticated = localStorage.getItem('user_authenticated');
+            if (isAuthenticated !== 'true') {
+                window.location.href = 'register.html';
+                return;
+            }
+            const isLinked = localStorage.getItem('trading_linked');
+            if (isLinked === 'true') {
+                const connTitle = document.getElementById('connStatusTitle');
+                const connSub = document.getElementById('connSubText');
+                const connIcon = document.getElementById('connIcon');
+                const actionBtn = document.getElementById('actionLinkBtn');
+                const accId = localStorage.getItem('account_id');
+                const server = localStorage.getItem('broker_server');
+
+                if (connTitle) connTitle.innerText = "MT5 Bridge: Connected";
+                if (connSub && accId) connSub.innerText = `Account: ${accId} | Node: ${server || 'Global'}`;
+                if (actionBtn) actionBtn.innerText = "Manage Link";
+                if (connIcon) {
+                    connIcon.style.background = "rgba(0, 242, 255, 0.1)";
+                    connIcon.querySelector('svg').setAttribute('stroke', 'var(--primary)');
+                }
+
+                // Update Terminal Title based on platform
+                const platform = localStorage.getItem('account_platform') || 'MT5';
+                const terminalHeader = document.querySelector('.terminal-top-bar div[style*="font-weight: 700"]');
+                if (terminalHeader) terminalHeader.innerText = `${platform} TERMINAL 0.2.4`;
+            }
+        }
+
+        // Initialize Market Watch
+        function updateMarketWatch() {
+            marketList.innerHTML = '';
+            marketData.forEach(item => {
+                const change = (Math.random() * 0.0004) - 0.0002;
+                item.b = (item.b * (1 + change)).toFixed(item.s.includes('JPY') ? 3 : 5);
+                item.a = (parseFloat(item.b) + (item.s.includes('XAU') ? 0.50 : 0.00015)).toFixed(item.s.includes('JPY') ? 3 : 5);
+
+                const div = document.createElement('div');
+                div.className = 'market-item';
+                div.onclick = () => { selectSymbol(item.s); };
+                div.innerHTML = `
+                    <b>${item.s}</b>
+                    <span class="bid-price">${item.b}</span>
+                    <span class="ask-price">${item.a}</span>
+                `;
+                marketList.appendChild(div);
+
+                // Update live price in pressure meter if this is the active symbol
+                if (item.s === currentSymbol) {
+                    priceDisplay.innerText = item.a;
+                    // Flash effect for price update
+                    priceDisplay.style.color = change > 0 ? 'var(--accent)' : '#ff3e3e';
+                    setTimeout(() => { priceDisplay.style.color = '#fff'; }, 300);
+                }
+            });
+        }
+
+        function selectSymbol(sym) {
+            currentSymbol = sym;
+            symbolBadge.innerText = sym;
+            watermark.innerHTML = `${sym}<br><span style="font-size: 1rem; opacity: 0.5;">${currentTimeframe} • ALGORITHM 0.2</span>`;
+
+            // Get current price of new symbol
+            const asset = marketData.find(m => m.s === sym);
+            if (asset) priceDisplay.innerText = asset.a;
+
+            updatePressure();
+        }
+
+        function setTimeframe(tf) {
+            currentTimeframe = tf;
+            document.querySelectorAll('.timeframe-pill').forEach(p => {
+                p.classList.toggle('active', p.innerText === tf);
+            });
+            watermark.innerHTML = `${currentSymbol}<br><span style="font-size: 1rem; opacity: 0.5;">${tf} • ALGORITHM 0.2</span>`;
+            updatePressure();
+        }
+
+        function updatePressure() {
+            const volatility = Math.random() * 15;
+            const trend = Math.sin(Date.now() / 5000) * 20;
+            const randomBuy = Math.max(10, Math.min(90, Math.floor(50 + trend + (Math.random() * volatility - volatility / 2))));
+            const randomSell = 100 - randomBuy;
+
+            buyGauge.style.width = randomBuy + '%';
+            sellGauge.style.width = randomSell + '%';
+            buyValEl.innerText = randomBuy;
+            sellValEl.innerText = randomSell;
+
+            if (randomBuy > 65) {
+                recommendationEl.innerText = "Strong Buy";
+                recommendationEl.className = "signal-badge signal-strong-buy";
+            } else if (randomSell > 65) {
+                recommendationEl.innerText = "Strong Sell";
+                recommendationEl.className = "signal-badge signal-strong-sell";
+            } else {
+                recommendationEl.innerText = "Neutral";
+                recommendationEl.className = "signal-badge signal-neutral";
+            }
+        }
+
+        setInterval(updateMarketWatch, 800);
+        setInterval(() => { if (isRunning) updatePressure(); }, 1500);
+
+        // Bot Logic
+        async function openTrade() {
+            if (!isRunning) return;
+
+            // Neural Analysis Simulation
+            aiInsightEl.innerText = `[AI Analysis] Scanning market liquidity and order blocks...`;
+            aiInsightEl.style.color = 'var(--primary)';
+
+            await new Promise(r => setTimeout(r, 600));
+
+            const buyProb = parseInt(buyValEl.innerText);
+            const sellProb = parseInt(sellValEl.innerText);
+
+            // Refined Entry Logic: Stronger thresholds for higher win rate
+            const threshold = currentStrategy === 'scalp' ? 68 : 72;
+
+            if (buyProb < threshold && sellProb < threshold) {
+                aiInsightEl.innerText = `[AI Analysis] Signal strength weak (${Math.max(buyProb, sellProb)}%). Waiting for optimal entry.`;
+                aiInsightEl.style.color = 'var(--text-dim)';
+                return;
+            }
+
+            const asset = marketData.find(m => m.s === currentSymbol) || marketData[0];
+            const type = buyProb >= threshold ? 'BUY' : 'SELL';
+
+            aiInsightEl.innerText = `[AI Decision] High Probability ${type} Signal detected. Executing via Bridge...`;
+            aiInsightEl.style.color = 'var(--accent)';
+
+            let volumeBase = (Math.random() * 0.5 + 0.1);
+            if (currentStrategy === 'scalp') volumeBase *= 2.5; // Scalping uses bigger lots
+            if (currentStrategy === 'swing') volumeBase *= 0.4; // Swing uses smaller lots
+
+            const volume = volumeBase.toFixed(2);
+            const ticket = Math.floor(Math.random() * 900000) + 100000;
+            const time = new Date().toLocaleTimeString();
+            const price = type === 'BUY' ? asset.a : asset.b;
+
+            // Strategy based Take Profit and Stop Loss (more professional)
+            let pips = 0.00500;
+            let tpMultiplier = 2.5; // Standard 1:2.5 risk reward
+
+            if (currentStrategy === 'scalp') {
+                pips = 0.00150; // Tight SL for scalping
+                tpMultiplier = 3.0; // Quick scalps
+            }
+            if (currentStrategy === 'swing') {
+                pips = 0.02500; // Wide SL for swing
+                tpMultiplier = 4.0; // Large targets
+            }
+
+            const sl = type === 'BUY' ? (parseFloat(price) - pips).toFixed(5) : (parseFloat(price) + pips).toFixed(5);
+            const tp = type === 'BUY' ? (parseFloat(price) + (pips * tpMultiplier)).toFixed(5) : (parseFloat(price) - (pips * tpMultiplier)).toFixed(5);
+
+            const trade = {
+                symbol: asset.s,
+                ticket: ticket,
+                time: time,
+                type: type,
+                volume: volume,
+                price: price,
+                sl: sl,
+                tp: tp,
+                profit: 0,
+                startTime: Date.now()
+            };
+
+            activeTrades.push(trade);
+            renderTrades();
+
+            setTimeout(() => {
+                if (isRunning) aiInsightEl.innerText = `EA 0.2 monitoring ${trade.type} #${trade.ticket} on ${trade.symbol}...`;
+            }, 1000);
+        }
+
+        function renderTrades() {
+            tradesBody.innerHTML = '';
+            let totalProfit = 0;
+
+            const buyProb = parseInt(buyValEl.innerText);
+            const sellProb = parseInt(sellValEl.innerText);
+
+            activeTrades.forEach((t, index) => {
+                // Calculate simulated profit based on market pressure
+                let directionBias = 0;
+                if (t.type === 'BUY') directionBias = (buyProb - 50) / 10;
+                else directionBias = (sellProb - 50) / 10;
+
+                const timeHeld = (Date.now() - t.startTime) / 1000; // seconds
+                const volatility = (Math.random() - 0.5) * 2;
+
+                // Base profit movement
+                let movement = directionBias + volatility;
+
+                // Adjust movement by strategy
+                if (currentStrategy === 'scalp') movement *= 1.8;
+                if (currentStrategy === 'swing') movement *= 0.6;
+
+                // Accumulate profit
+                const currentProfit = parseFloat(t.profit) + movement;
+                t.profit = currentProfit.toFixed(2);
+
+                totalProfit += currentProfit;
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${t.symbol}</td>
+                    <td>${t.ticket}</td>
+                    <td>${t.time}</td>
+                    <td class="${t.type === 'BUY' ? 'pos-buy' : 'pos-sell'}">${t.type}</td>
+                    <td>${t.volume}</td>
+                    <td>${t.price}</td>
+                    <td>${t.sl}</td>
+                    <td>${t.tp}</td>
+                    <td class="${t.profit >= 0 ? 'profit-pos' : 'profit-neg'}">${t.profit}</td>
+                `;
+                tradesBody.appendChild(row);
+
+                // Professional Exit Logic
+                const profitVal = parseFloat(t.profit);
+                const isTP = (t.type === 'BUY' && profitVal > 25) || (t.type === 'SELL' && profitVal > 25);
+                const isSL = (t.type === 'BUY' && profitVal < -15) || (t.type === 'SELL' && profitVal < -15);
+
+                // Random exit if in profit or long duration
+                let exitProb = 0.95;
+                if (profitVal > 10) exitProb = 0.85;
+                if (timeHeld > 120) exitProb = 0.70;
+
+                if (isTP || isSL || Math.random() > exitProb) {
+                    const finalProfit = profitVal;
+                    balance += finalProfit;
+                    totalTrades++;
+                    if (finalProfit > 0) totalWins++;
+                    else totalLosses++;
+
+                    // Log the exit
+                    aiInsightEl.innerText = `[AI Exit] Trade #${t.ticket} closed at ${finalProfit >= 0 ? 'PROFIT' : 'LOSS'}: $${finalProfit.toFixed(2)}`;
+                    activeTrades.splice(index, 1);
+                }
+            });
+
+            equity = balance + totalProfit;
+            equityEl.innerText = equity.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            balanceEl.innerText = balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            if (mtBalanceEl) mtBalanceEl.innerText = balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            if (freeMarginEl) freeMarginEl.innerText = equity.toLocaleString(undefined, { minimumFractionDigits: 2 });
+
+            // Update Statistics
+            const plValue = balance - depositBalance;
+            totalPLEl.innerText = plValue.toLocaleString(undefined, { minimumFractionDigits: 2 });
+            totalPLEl.parentElement.style.color = plValue >= 0 ? 'var(--accent)' : '#ff3e3e';
+            winCountEl.innerText = totalWins;
+            lossCountEl.innerText = totalLosses;
+            const wr = (totalWins / totalTrades * 100).toFixed(1);
+            winRateEl.innerText = wr;
+        }
+
+        setInterval(() => {
+            if (isRunning) {
+                renderTrades();
+                let tradeProb = 0.8;
+                if (currentStrategy === 'scalp') tradeProb = 0.6; // High frequency
+                if (currentStrategy === 'swing') tradeProb = 0.95; // Low frequency
+
+                if (Math.random() > tradeProb) openTrade();
+            }
+        }, 1500);
+
+        runBtn.onclick = async () => {
+            if (localStorage.getItem('trading_linked') !== 'true') {
+                window.location.href = 'link-broker.html';
+                return;
+            }
+
+            if (!isRunning) {
+                // Connection Sequence
+                runBtn.disabled = true;
+                runBtn.innerHTML = `<span class="loader-small"></span> VERIFYING BRIDGE...`;
+                aiInsightEl.innerText = "ESTABLISHING SECURE MT5 BRIDGE VIA LOCAL NODE...";
+
+                await new Promise(r => setTimeout(r, 1500));
+
+                runBtn.innerHTML = `<span class="loader-small"></span> ANALYZING SYNC...`;
+                aiInsightEl.innerText = "BRIDGE ESTABLISHED. SYNCING HISTORICAL DATA FOR ANALYSIS...";
+
+                await new Promise(r => setTimeout(r, 1200));
+
+                isRunning = true;
+                runBtn.disabled = false;
+                runBtn.innerHTML = `STOP EA 0.2`;
+                runBtn.className = 'btn-bot btn-stop';
+                aiInsightEl.innerText = `EA 0.2 active. Scanning ${currentTimeframe} timeframe using ${currentStrategy === 'scalp' ? 'SCALPING' : 'DAY TRADE'} logic...`;
+
+                updatePressure();
+                // Take an immediate trade if conditions met
+                openTrade();
+            } else {
+                isRunning = false;
+                runBtn.innerHTML = `INITIALIZE EA 0.2`;
+                runBtn.className = 'btn-bot btn-start';
+                aiInsightEl.innerText = "Expert Advisor stopped. MT5 Terminal in standby.";
+                activeTrades = [];
+                renderTrades();
+            }
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.toolbox-tab').forEach(t => t.classList.remove('active'));
+            if (event) event.target.classList.add('active');
+        }
+
+        // Indicators Logic
+        const indicatorOverlay = document.getElementById('indicatorOverlay');
+        const openIndBtn = document.getElementById('openIndicators');
+        const closeIndBtn = document.getElementById('closeIndicators');
+        let activeIndicators = ['MA', 'MACD'];
+
+        openIndBtn.onclick = () => indicatorOverlay.style.display = 'flex';
+        closeIndBtn.onclick = () => indicatorOverlay.style.display = 'none';
+        window.onclick = (e) => { if (e.target == indicatorOverlay) indicatorOverlay.style.display = 'none'; };
+
+        function toggleIndicator(el, name) {
+            el.classList.toggle('active');
+            const isActive = el.classList.contains('active');
+
+            if (name === 'PRESSURE') {
+                const meter = document.getElementById('pressureMeter');
+                meter.style.display = isActive ? 'block' : 'none';
+            }
+
+            if (isActive) {
+                if (!activeIndicators.includes(name)) activeIndicators.push(name);
+            } else {
+                activeIndicators = activeIndicators.filter(i => i !== name);
+            }
+
+            // Save state
+            localStorage.setItem('activeIndicators', JSON.stringify(activeIndicators));
+
+            if (isRunning) aiInsightEl.innerText = `EA 0.2 re-calibrating. Active Indicators: ${activeIndicators.join(', ')}`;
+        }
+
+        // Algorithmic Setup Logic
+        const algoOverlay = document.getElementById('algoOverlay');
+        const openAlgoBtn = document.getElementById('openAlgo');
+        const closeAlgoBtn = document.getElementById('closeAlgo');
+
+        openAlgoBtn.onclick = () => algoOverlay.style.display = 'flex';
+        closeAlgoBtn.onclick = () => algoOverlay.style.display = 'none';
+
+        function toggleSwitch(el, feature) {
+            el.classList.toggle('active');
+            const isActive = el.classList.contains('active');
+
+            // Save state
+            localStorage.setItem(`algo_${feature}`, isActive);
+
+            if (isRunning) aiInsightEl.innerText = `Neural Settings Updated: ${feature} is now ${isActive ? 'ON' : 'OFF'}`;
+        }
+
+        function updateAlgoSettings() {
+            currentStrategy = document.getElementById('tradeStrategy').value;
+            const risk = document.getElementById('riskLevel').value;
+
+            // Save state
+            localStorage.setItem('tradeStrategy', currentStrategy);
+            localStorage.setItem('riskLevel', risk);
+
+            if (isRunning) aiInsightEl.innerText = `Neural Strategy shifted to ${currentStrategy.toUpperCase()}. Risk set to ${risk}%. Execution logic updated.`;
+        }
+
+        // Close modals on click outside
+        window.onclick = (e) => {
+            if (e.target == indicatorOverlay) indicatorOverlay.style.display = 'none';
+            if (e.target == algoOverlay) algoOverlay.style.display = 'none';
+        };
+
+        function loadSavedSettings() {
+            // Load Strategy & Risk
+            const savedStrategy = localStorage.getItem('tradeStrategy');
+            const savedRisk = localStorage.getItem('riskLevel');
+            if (savedStrategy) {
+                document.getElementById('tradeStrategy').value = savedStrategy;
+                currentStrategy = savedStrategy;
+            }
+            if (savedRisk) document.getElementById('riskLevel').value = savedRisk;
+
+            // Load Algo Switches
+            ['Hedge', 'Protector'].forEach(feature => {
+                const saved = localStorage.getItem(`algo_${feature}`);
+                const el = Array.from(document.querySelectorAll('.indicator-switch')).find(s => s.getAttribute('onclick')?.includes(feature));
+                if (saved !== null && el) {
+                    if (saved === 'true') el.classList.add('active');
+                    else el.classList.remove('active');
+                }
+            });
+
+            // Load Indicators
+            const savedIndicators = localStorage.getItem('activeIndicators');
+            if (savedIndicators) {
+                activeIndicators = JSON.parse(savedIndicators);
+                document.querySelectorAll('.indicator-switch').forEach(sw => {
+                    const name = sw.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+                    if (name && name !== 'Hedge' && name !== 'Protector') {
+                        if (activeIndicators.includes(name)) sw.classList.add('active');
+                        else sw.classList.remove('active');
+
+                        if (name === 'PRESSURE') {
+                            document.getElementById('pressureMeter').style.display = activeIndicators.includes('PRESSURE') ? 'block' : 'none';
+                        }
+                    }
+                });
+            }
+        }
+
+        // Initial setup
+        loadSavedSettings();
+        checkSession();
+        updateMarketWatch();
+        depositEl.innerText = depositBalance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        balanceEl.innerText = balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        if (mtBalanceEl) mtBalanceEl.innerText = balance.toLocaleString(undefined, { minimumFractionDigits: 2 });
+        if (equityEl) equityEl.innerText = equity.toLocaleString(undefined, { minimumFractionDigits: 2 });
+    </script>
+</body>
+
+</html>
